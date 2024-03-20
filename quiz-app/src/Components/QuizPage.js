@@ -8,6 +8,10 @@ const QuizPage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [timer, setTimer] = useState(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState(0);
+
 
   useEffect(() => {
     // Fetch questions based on quiz settings
@@ -76,8 +80,10 @@ const QuizPage = () => {
     // Check if the selected answer is correct
     const correctAnswer = questions[currentQuestionIndex].correct_answer;
     if (selectedAnswer === correctAnswer) {
+        setCorrectAnswers((prevCount) => prevCount + 1);
       setFeedback('Correct!');
     } else {
+        setIncorrectAnswers((prevCount) => prevCount + 1);
       setFeedback('Incorrect!');
     }
     console.log('Selected answer:', selectedAnswer);
@@ -86,14 +92,30 @@ const QuizPage = () => {
   };
 
   const handleSubmitQuiz = () => {
-    // Logic to handle submitting the quiz and displaying performance metrics
+    setQuizSubmitted(true);
   };
+
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  if (quizSubmitted) {
+    const totalQuestions = questions.length;
+    const totalScore = correctAnswers * 10;
+
+    return (
+      <div>
+        <h1>Quiz Results</h1>
+        <p>Total Questions: {totalQuestions}</p>
+        <p>Correct Answers: {correctAnswers}</p>
+        <p>Incorrect Answers: {incorrectAnswers}</p>
+        <p>Total Score: {totalScore}</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {currentQuestion && (
+    {currentQuestion && (
         <>
           <p>Question {currentQuestionIndex + 1} of {quizSettings.numberOfQuestions}</p>
           <h3>{currentQuestion.question}</h3>
